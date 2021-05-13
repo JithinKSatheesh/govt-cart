@@ -1,6 +1,6 @@
 import React from 'react'
 import Nav from './nav'
-import Pagecontent2 from './pagecontent2'
+import Pagecontent2 from './Kit_Item_200'
 
 const Home2=()=> {
     return (

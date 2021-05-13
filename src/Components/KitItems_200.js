@@ -1,38 +1,30 @@
-import React from 'react'
+import React,{useState} from 'react'
 import { Link } from 'react-router-dom'
-import Footer from './footer'
+import Changehomeswitch from './ChangeHomeSwitch'
+import ChangeKitSwitch from './ChangeKitSwitch'
 
-const Pagecontent2=()=> {
+const KitItems=({AddToCart})=> {
+
+    const [quantity,setQuantity] = useState('1')
+
     return (
         <div>
-            
-                <Link to="/">
-                    <a className="kitlink"  href="">Kit</a>
-                </Link>
-                <Link to="/kit">
-                    <a className="vegitablelink"  href="">Vegitables</a>
-                </Link>
                 
+                <Changehomeswitch/>
                 <div className="whiteclr"></div>
-           
-            
-            <div className="boxes11">
-            <Link to="/">
-            <a href="">Kit <br/>₹ 200 /- </a>
-            </Link>
-            </div>
-            <div className="boxes22">
-                <Link to="/kit2">
-                <a href="">Kit <br/>₹ 400 /- </a>
-                </Link>
-            </div>
+                <ChangeKitSwitch/>
+
+
             <div className="info">
-                <h1>₹ 400 /-</h1>
+                <h1>₹ 200 /-</h1>
                 <h1 className="fresh">Fresh <br/> vegitable kit</h1>
                 
                     <div>
                     <h3 className="qty">Quantity</h3>
-                    <select class="round">
+                    <select 
+                        onChange={(e) => { setQuantity(e.target.value) }}
+                        value={quantity}
+                        class="round">
                         <option>1</option>
                         <option>2</option>
                         <option>3</option>
@@ -40,7 +32,15 @@ const Pagecontent2=()=> {
                     </div>
                     
                     <br/>
-                <a href="">Add to cart</a>
+                <a 
+                onClick={()=>{AddToCart({
+                    id      :   '00',
+                    name    :   "Kit 1",
+                    price   :   "200",
+                    image   :   "kit url",
+                    quantity:   quantity,
+                })}}
+                >Add to cart</a>
             </div>
             <div className="elispe">
 
@@ -69,10 +69,9 @@ const Pagecontent2=()=> {
                 <img src='./images/image4.png'/>
                 </div>
             </div>
-            <Footer/>
 
         </div>
     )
 }
 
-export default Pagecontent2
+export default KitItems

@@ -2,10 +2,14 @@ import React from 'react'
 import './nav.css'
 import { Link } from 'react-router-dom'
 import { ProductConsumer } from './Context'
+import {signOut,isAuthenticated} from './Auth/Auth'
 
 
 
 const Nav = () => {
+
+    const userPhoneNo = isAuthenticated().phoneNumber
+
     return (
         <div>
             <div className="hero">
@@ -20,24 +24,31 @@ const Nav = () => {
                                             Home
                                         </Link>
                                     </li>
-                                    <li>
-                                        <Link to='/'>
-                                            Your orders
-                                        </Link>
-                                    </li>
+                                    
                                     <li>
                                         <Link to='/cart'>
-                                            Cart
+                                            Your order
                                             <div className="badge badge-danger">
                                                 {values.cart.length}
                                             </div>
                                         </Link>
                                     </li>
                                     <li>
+                                        {userPhoneNo 
+                                        ?
+                                        <Link 
+                                            className={''}
+                                            onClick={()=>{signOut()}}
+                                            to='/login'>
+                                                logout
+                                        </Link>
+                                        :
                                         <Link to='/'>
                                             Login
                                         </Link>
+                                        }
                                     </li>
+                                    
                                 </ul>
                                 <a 
                                     onClick={()=>{values.CheckOut()}}

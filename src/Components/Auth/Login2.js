@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import firebase from 'firebase/app';
+import {isAuthenticated,authenticate,signOut} from './Auth'
+import {Link} from 'react-router-dom'
 
 
 const firebaseConfig = {
@@ -18,7 +20,7 @@ export default function Login(props) {
 
     return (
         <>
-            <div>
+            <div className="container">
                 <div>
                     <RenderForm />
                 </div>
@@ -97,6 +99,9 @@ const RenderForm = () => {
                     <h2 className="mb-3">Login</h2>
                     <div className="form" >
                         <div id="recaptcha-container"></div>
+                        <div className="small">
+                            Just type any phone and login
+                        </div>
                         <div>
                             <input
                                 type="text" name="mobile"
@@ -105,9 +110,15 @@ const RenderForm = () => {
                                 value={values.mobile}
                                 required />
                         </div>
-                        <button
-                            onClick={() => { getOtp() }}
-                            type="submit">Submit</button>
+                        <Link
+                            to='/'
+                            className='btn btn-success'
+                            onClick={()=>{authenticate({
+                                phoneNumber : '0909098989' ,
+                                address : '',
+                              },()=>{})
+                            }}
+                            type="submit">Submit</Link>
                     </div>
                 </div>
             </div>
@@ -130,6 +141,12 @@ const RenderForm = () => {
                         <button type="submit">Submit</button>
                     </div>
                 </div>
+            </div>
+
+            <div
+            onClick={()=>{signOut()}}
+            className="btn btn-danger">
+                Logout
             </div>
 
         </>

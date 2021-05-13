@@ -1,37 +1,42 @@
-import React from 'react'
+import React,{useState} from 'react'
 import { Link } from 'react-router-dom'
+import Changehomeswitch from './ChangeHomeSwitch'
+import ChangeKitSwitch from './ChangeKitSwitch'
+import Footer from './footer'
 
-const Pagecontent1=()=> {
+
+const Pagecontent2=({AddToCart})=> {
+
+    const [quantity,setQuantity] = useState('1')
+
+
     return (
         <div>
-                <Link to="/">
-                    <a className="kitlink"  href="">Kit</a>
-                </Link>
-                <Link to="/kit">
-                    <a className="vegitablelink"  href="">Vegitables</a>
-                </Link>
-                
+                <Changehomeswitch/>
                 <div className="whiteclr"></div>
-           
+                <ChangeKitSwitch/>
             
-            <div className="boxes">
-            <Link to="/">
-            <a href="">Kit <br/>₹ 200 /- </a>
-            </Link>
+            {/* <div className="boxes11">
+                <Link to="/">
+                    <a href="">Kit <br />₹ 200 /- </a>
+                </Link>
             </div>
-            <div className="boxes2">
-            <Link to="/kit2">  
-                <a href="">Kit <br/>₹ 400 /- </a>
-            </Link>
-                
-            </div>
+            <div className="boxes22">
+                <Link to="/kit2">
+                    <a href="">Kit <br />₹ 400 /- </a>
+                </Link>
+            </div> */}
+
+
             <div className="info">
-                <h1>₹ 200 /-</h1>
+                <h1>₹ 400 /-</h1>
                 <h1 className="fresh">Fresh <br/> vegitable kit</h1>
                 
                     <div>
                     <h3 className="qty">Quantity</h3>
-                    <select class="round">
+                    <select 
+                        onChange={(e) => { setQuantity(e.target.value) }}
+                        class="round">
                         <option>1</option>
                         <option>2</option>
                         <option>3</option>
@@ -39,7 +44,16 @@ const Pagecontent1=()=> {
                     </div>
                     
                     <br/>
-                <a href="">Add to cart</a>
+                <a onClick={()=>{AddToCart({
+                        id      :   '00',
+                        name    :   "Kit 2",
+                        price   :   "400",
+                        image   :   "kit url",
+                        quantity:   quantity,
+                    })}}
+                    >
+                    Add to cart
+                </a>
             </div>
             <div className="elispe">
 
@@ -68,9 +82,10 @@ const Pagecontent1=()=> {
                 <img src='./images/image4.png'/>
                 </div>
             </div>
+            <Footer/>
 
         </div>
     )
 }
 
-export default Pagecontent1
+export default Pagecontent2

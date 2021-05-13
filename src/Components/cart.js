@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import Nav from './nav'
+import RenderCartItems from './CartRenderCartItems'
+import Rendercartorder from './CartRenderCartOrder'
 
 import {ProductConsumer} from './Context'
 
@@ -13,37 +15,23 @@ const Cart=(props)=> {
         <div>
             <Nav/>
 
-            <div  >
+            <div  className="container" >
                 {/* accessing variables from context.js */}
+                <div className="row">
+                    <div className="col-12 col-md-6">
+                        <RenderCartItems/>
+                    </div>
+                    <div className="col-12 col-md-6">
+                        <Rendercartorder/>
+                    </div>
+                </div>
                 
-                <ProductConsumer>
-                    {(values)=>{
-                        return(
-                            <>
-                            <div>
-                            {console.log("from cart",values)}
-                            
-                            {values.cart.length === 0 && <div className='text-center'>Cart is empty</div>}  
-                            <div className="">
-                                {
-                                    values.cart.map((item)=>{
-                                        return(
-                                            <div className="card">
-                                                {item.name}
-                                            </div>
-                                        )
-                                    })
-                                }          
-                            </div> 
-
-                            </div>
-                            </>
-                        )
-                    }}
-                </ProductConsumer>
+                
             </div>
         </div>
     )
 }
 
 export default Cart
+
+

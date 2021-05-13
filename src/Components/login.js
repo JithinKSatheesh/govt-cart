@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import firebase from 'firebase/app';
 import { auth } from 'firebase';
+import {isAuthenticated,authenticate} from './Auth/Auth'
 
 var element;
 
@@ -111,7 +112,9 @@ class PhoneLogin extends Component {
                     onChange={this.onChangeHandler}
                     required />
                 </div>
-                <button type="submit">Submit</button>
+                <button
+                
+                type="submit">Submit</button>
               </form>
             </div>
           </div>

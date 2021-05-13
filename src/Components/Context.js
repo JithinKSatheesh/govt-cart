@@ -1,5 +1,5 @@
 import React,{useEffect, useState} from 'react'
-
+import {authenticate, isAuthenticated} from './Auth/Auth'
 // importing data
 import fakedata from './fakedata'
 
@@ -13,6 +13,9 @@ function  ProductProvider(props) {
     const [values,setValues] = useState({
         cart : [],
         products_veg: [],
+        _home_screen : 'kit', // kit or veg
+        kit_screen : '200',      //200 or 400
+        user_address : [],
 
     })
 
@@ -22,10 +25,32 @@ function  ProductProvider(props) {
         initKitProducts()
     },[])
 
+    const changeHomeScreen=(input)=>{
+        setValues({
+            ...values,
+            _home_screen : input
+        })
+    }
+    const changeKitScreen=(input)=>{
+        setValues({
+            ...values,
+            kit_screen : input
+        })
+    }
+
+    const UpdateAddress = (address)=>{
+        setValues({
+            ...values,
+            user_address: [address],
+        })
+    }
+
+    const initUserAddress =()=>{
+        
+    }
+
 
     const initKitProducts = ()=>{
-
-
         // write a function to fetch data from database 
         fetch('https://api.npms.io/v2/search?q=react')
         .then(res =>{
@@ -51,8 +76,11 @@ function  ProductProvider(props) {
 
 
     
-    const AddToCart = (id) =>{
-        const item = values.products_veg.find((x) => x.id === id);
+    const AddToCart = (item) =>{
+
+        // const item = values.products_veg.find((x) => x.id === id);
+        // item.quantity = parseInt(quantity)
+        console.log(item)
 
         // inset to cart --- backend
 
@@ -121,6 +149,9 @@ function  ProductProvider(props) {
             ...values,
             AddToCart:AddToCart,
             CheckOut:CheckOut,
+            changeHomeScreen:changeHomeScreen,
+            changeKitScreen:changeKitScreen,
+            UpdateAddress:UpdateAddress,
         }}>
             {props.children}
         </ProductContext.Provider>

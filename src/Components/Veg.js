@@ -1,6 +1,6 @@
 import React from 'react'
 import { Cartprovider } from './cartcontext'
-import Kit from './kit'
+import VegItems from './VegItems'
 import Nav from './nav'
 
 const Product = ()=> {
@@ -8,7 +8,7 @@ const Product = ()=> {
     
         <Cartprovider>
             <Nav/>
-            <Kit/>
+            <VegItems/>
         </Cartprovider>
       
     )
