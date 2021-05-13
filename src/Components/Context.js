@@ -93,7 +93,11 @@ function  ProductProvider(props) {
 
 
     const CheckOut = () =>{
+
         console.log("cheking out")
+        alert("checking out..",values.cart)
+
+
         fetch('https://example.com/checkout', {
                 method: 'POST',
                 headers: {
