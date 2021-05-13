@@ -50,14 +50,16 @@ const Nav = () => {
                                     </li>
                                     
                                 </ul>
-                                <a 
-                                    onClick={()=>{values.CheckOut()}}
+
+                                <Link 
+                                    to='/cart'
+                                    // onClick={()=>{values.CheckOut()}}
                                     style={{cursor:'pointer'}}
                                     className="check" >
                                     <i class="fas fa-shopping-bag"></i>
                                     Checkout  
                                     <i class="fas fa-arrow-right"></i>
-                                </a>
+                                </Link>
                             </>)
                         }}
                     </ProductConsumer>
