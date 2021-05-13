@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import firebase from 'firebase/app';
+// import firebase from 'firebase/app';
+import firebase from './Firebase'
+
 import {isAuthenticated,authenticate,signOut} from './Auth'
-import {Link} from 'react-router-dom'
+import {Link,Redirect} from 'react-router-dom'
+// import { browserHistory } from 'react-router'
 
 
-const firebaseConfig = {
-    apiKey: "AIzaSyCAXbQ9-j_ah0scqU8h_oea7zn7IN7EgXo",
-    authDomain: "authtestotp-20c40.firebaseapp.com",
-    projectId: "authtestotp-20c40",
-    storageBucket: "authtestotp-20c40.appspot.com",
-    messagingSenderId: "406911817001",
-    appId: "1:406911817001:web:a52cc222e6d10a07b3d338",
-    measurementId: "G-WB3117M2ZN"
-}
+
 
 
 export default function Login(props) {
@@ -37,7 +32,9 @@ const RenderForm = () => {
     const [values, setValues] = useState({
         otp: '',
         mobile: '',
-        confirmationResult: ''
+        confirmationResult: '',
+        c_error:'',
+        redirectToReffer:false,
     })
 
 
@@ -47,83 +44,97 @@ const RenderForm = () => {
         console.log(values)
     }
 
-    //initialize firebase on load
-    useEffect(() => {
-        // firebase.initializeApp(firebaseConfig)
-    }, [])
-
-    const setUpRecaptcha = () => {
-        firebase.initializeApp(firebaseConfig)
-        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
-          "recaptcha-container",
-          {
-            size: "invisible",
-            callback: function (response) {
-              console.log("Captcha Resolved");
-              this.onSignInSubmit();
-            },
-            defaultCountry: "IN",
-          }
-        );
-      };
+    const redirectUser = ()=>{
+        if(values.redirectToReffer){
+            return <Redirect to='/'/>
+            
+        }
+    }
+    
 
 
     const getOtp = () => {
         let phoneNumber = "+91" + values.mobile
-        setUpRecaptcha()
-        let appVerifier = window.recaptchaVerifier
+        let recaptcha = new firebase.auth.RecaptchaVerifier('recaptcha-container')
         
-        firebase
-            .auth()
-            .signInWithPhoneNumber(phoneNumber, appVerifier)
-            .then(function (confirmationResult) {
-                // SMS sent. Prompt user to type the code from the message, then sign the
-                // user in with confirmationResult.confirm(code).
-                // window.confirmationResult = confirmationResult;
-                setValues({ ...values, confirmationResult: confirmationResult })
-                console.log(confirmationResult);
-                console.log("OTP is sent");
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+        firebase.auth().signInWithPhoneNumber(phoneNumber, recaptcha)
+        .then(function (e) {
+            
+            setValues({ ...values, confirmationResult: e })
+            console.log("OTP is sent");
+            
+        })
+        .catch(function (error) {
+            console.log(error);
+            alert(error)
+            
+        });
     }
 
+
+    const submitOTP = ()=>{
+
+        let code = values.otp
+        values.confirmationResult.confirm(code).then((result)=>{
+            console.log(result.user,"User")
+            authenticate({
+                phoneNumber : "+91" + values.mobile
+            },()=>{
+                setValues({
+                    ...values,
+                    redirectToReffer:true,
+                })
+            })
+
+            
+        }).catch(err=>{
+            console.log("error")
+            alert("error or wrong otp")
+
+        })
+
+    }
 
 
 
     return (
         <>
-            <div className="row">
-                <div className="col-12 col-md-6 col-lg-5">
-                    <h2 className="mb-3">Login</h2>
-                    <div className="form" >
-                        <div id="recaptcha-container"></div>
-                        <div className="small">
-                            Just type any phone and login
+
+            {
+                values.confirmationResult.length === 0 &&
+
+                <div className="row">
+                    <div className="col-12 col-md-6 col-lg-5">
+                        <h2 className="mb-3">Login</h2>
+                        <div className="form" >
+                            <div id="recaptcha-container"></div>
+                            <div className="small">
+                                Just type any phone and login
+                            </div>
+                            <div>
+                                <input
+                                    type="text" name="mobile"
+                                    placeholder="Mobile Number"
+                                    onChange={handleChange('mobile')}
+                                    value={values.mobile}
+                                    required />
+                            </div>
+                            <label></label>
+                            <Link
+                                className='btn btn-success'
+                                onClick={()=>{getOtp()}}
+                                >Submit</Link>
                         </div>
-                        <div>
-                            <input
-                                type="text" name="mobile"
-                                placeholder="Mobile Number"
-                                onChange={handleChange('mobile')}
-                                value={values.mobile}
-                                required />
-                        </div>
-                        <Link
-                            to='/'
-                            className='btn btn-success'
-                            onClick={()=>{authenticate({
-                                phoneNumber : '0909098989' ,
-                                address : '',
-                              },()=>{})
-                            }}
-                            type="submit">Submit</Link>
                     </div>
                 </div>
-            </div>
 
-            <div className="row">
+            }
+            
+
+
+            {
+                values.confirmationResult.length !== 0 &&
+                <div className="row">
                 <div className="col-12 col-md-6 col-lg-5">
                     <h2 className="mb-3">Enter OTP</h2>
                     <div className="form" >
@@ -138,16 +149,49 @@ const RenderForm = () => {
                                 value={values.otp}
                                 required />
                         </div>
-                        <button type="submit">Submit</button>
+                        <div 
+                            onClick={()=>{submitOTP()}}
+                            className="btn btn-success" 
+                            >
+                                Submit
+                        </div>
+                        <div 
+                            onClick={()=>{setValues({...values,confirmationResult:''})}}
+                            className="btn btn-danger" 
+                            >
+                                Retry
+                        </div>
+
                     </div>
                 </div>
             </div>
 
-            <div
-            onClick={()=>{signOut()}}
-            className="btn btn-danger">
-                Logout
+            }
+            <br /><br />
+            <div className="alert alert-warning">
+                Fake Auth button -- for testing only &nbsp;
+                <br /> Use when phone auth not work &nbsp;
+            {
+                
+                !isAuthenticated().phoneNumber &&
+                <div
+                    onClick={()=>{
+                        authenticate({
+                            phoneNumber : "+91989898989"
+                        },()=>{
+                            setValues({
+                                ...values,
+                                redirectToReffer:true,
+                            })
+                        })
+                    }}
+                    className="btn btn-danger">
+                    Login
+                </div>
+            }
             </div>
+
+            {redirectUser()}
 
         </>
     )
