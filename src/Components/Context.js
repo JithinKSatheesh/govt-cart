@@ -125,13 +125,17 @@ function  ProductProvider(props) {
         console.log("cheking out")
         alert("checking out..",values.cart)
 
+        const data = {
+            cart : values.cart,
+            billing_address : values.user_address
+        }
 
         fetch('https://example.com/checkout', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(values.cart),
+                body: JSON.stringify(data),
         }).then(res=>{
             // if success 
 
